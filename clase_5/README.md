@@ -1,8 +1,8 @@
 ##cse 05 - Aplicaciones desplegadas en Render
 
 ## Links de los deploys en la nube
-# **Gradio en Render:** link gradio render
-# **Streamlit en Render:** link streamlit render
+# **Gradio en Render:** https://proyecto-integrador-gradio.onrender.com
+# **Streamlit en Render:** https://proyecto-integrador-streamlit.onrender.com
 
 ---
 
