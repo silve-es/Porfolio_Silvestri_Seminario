@@ -1,0 +1,86 @@
+## 1. ¿Qué es TorchScript?
+
+* **Definición:** Es un subconjunto de Python y un formato de representación intermedia (IR) diseñado por el equipo de PyTorch.
+
+
+* Permite convertir modelos dinámicos de PyTorch (que dependen del intérprete de Python) en un **grafo de cómputo estático y serializable** que puede ejecutarse de forma independiente a Python.
+
+
+
+---
+
+## 2. De dónde viene (Origen y Contexto)
+
+* **Creado por:** Meta (Facebook AI Research) como parte del ecosistema PyTorch.
+
+
+* **Por qué nació:** Históricamente, PyTorch era preferido para investigación por su ejecución dinámica (*eager mode*), pero resultaba lento e ineficiente para despliegues masivos en servidores de producción o dispositivos móviles en comparación con TensorFlow (que usaba grafos estáticos). **TorchScript se creó para unir lo mejor de ambos mundos:** la flexibilidad del código en Python durante el entrenamiento y la velocidad/portabilidad de un ejecutable sin Python en producción.
+
+
+
+---
+
+## 3. Objetivo Principal
+
+* **Desacoplar el modelo de Python:** Permitir que un modelo entrenado en PyTorch se ejecute en entornos de alto rendimiento donde Python no está instalado o donde el *Global Interpreter Lock* (GIL) de Python representa un cuello de botella.
+
+
+* **Portabilidad a C++:** Permitir cargar y ejecutar modelos directamente desde código C++ utilizando la biblioteca **LibTorch**.
+
+
+* **Optimización de cómputo:** Ofrecer un grafo estático sobre el cual se puedan aplicar optimizaciones de compilación (como *operator fusion*, que combina múltiples operaciones matemáticas en un solo kernel de GPU).
+
+
+
+---
+
+## 4. ¿Cómo se genera/exporta un modelo a TorchScript?
+
+Existen dos formas principales de convertir un modelo de PyTorch a TorchScript:
+
+1. **Tracing (`torch.jit.trace`):**
+* Pasa una entrada de ejemplo (*dummy input*) por el modelo y "graba" todas las operaciones que se ejecutan.
+* *Ventaja:* Es muy fácil de usar.
+* *Desventaja:* No captura estructuras de control dinámicas (como condicionales `if/else` o bucles `for` que dependan del valor de los datos).
+
+
+
+
+2. **Scripting (`torch.jit.script`):**
+* Analiza directamente el código fuente Python del modelo y lo traduce al dialecto TorchScript.
+* *Ventaja:* Mantiene el flujo de control dinámico (`if`, `loops`, etc.).
+
+
+
+---
+
+## 5. Ventajas y Casos de Uso
+
+* **Despliegue Multiplataforma:** Servidores web (C++, Java, Rust), dispositivos móviles (iOS / Android con PyTorch Mobile) y sistemas embebidos.
+* **Rendimiento:** Reducción sustancial de latencia al evitar la sobrecarga del intérprete de Python.
+* **Serialización:** El archivo resultante (habitualmente con extensión `.pt` o `.pth`) incluye tanto los pesos (*weights*) como la arquitectura/definición de las operaciones.
+
+---
+
+Si lo comparamos con los otros formatos de exportación 
+
+### 1. TorchScript vs. Guardado clásico de PyTorch (`.state_dict`)
+
+* **PyTorch tradicional (`state_dict`):** Solo guarda los pesos numéricos (los parámetros aprendidos). Para volver a usar el modelo, **necesitas obligatoriamente el código fuente en Python** que define la arquitectura de la red neuronal.
+* **TorchScript:** Guarda tanto los pesos como la **estructura completa del modelo** en un formato compilado (un grafo intermedio). No necesitas el script original de Python para cargarlo y usarlo.
+
+### 2. TorchScript vs. Scikit-learn (`joblib` / `pickle`)
+
+* **Scikit-learn:** Utiliza librerías como `joblib` o `pickle` para serializar modelos más sencillos (como la regresión lineal básica del ejercicio). Son archivos prácticos, pero están atados enteramente al ecosistema de Python y a la librería de scikit-learn.
+* **TorchScript:** Está optimizado específicamente para redes neuronales y modelos profundos de PyTorch, permitiendo portabilidad a otros lenguajes.
+
+### 3. TorchScript vs. Keras (`.h5` / SavedModel)
+
+* **Keras:** Utiliza formatos propios de TensorFlow/Keras para guardar modelos.
+* **TorchScript:** Es el equivalente nativo dentro del ecosistema de PyTorch para cumplir el mismo objetivo (empaquetar el modelo para producción), pero integrado con las herramientas de compilación de Meta.
+
+---
+
+### La gran ventaja diferencial: **Independencia de Python**
+
+La diferencia más importante de TorchScript frente a los demás es que **puede ejecutarse sin Python**. Gracias a herramientas como **LibTorch**, puedes cargar y correr tu modelo de casas en un servidor de alto rendimiento escrito en **C++**, o en aplicaciones móviles (iOS y Android), logrando que la inferencia sea mucho más rápida y eficiente.
