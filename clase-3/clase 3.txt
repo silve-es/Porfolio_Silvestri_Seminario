@@ -1,0 +1,52 @@
+clase 3
+
+---
+
+## 1. 
+
+* **¿Qué pasó?**
+
+
+Al crear un repositorio en GitHub con un `README.md` (tildado) y, por otro lado, iniciar un proyecto local distinto con `git init` que tenía su propio `README.md`, ambos entornos generaron historiales independientes sin commits en común. Al intentar hacer `git push`, Git rechazó la acción por tratarse de historias divergentes (*unrelated histories*).
+
+
+* **¿Cómo se resolvió?**
+
+
+Se trajeron los cambios del remoto permitiendo la unión de historiales con `git pull origin main --allow-unrelated-histories`. Luego de resolver manualmente cualquier conflicto en el `README.md` y guardar el commit, se ejecutó un `git push` exitoso.
+
+
+
+---
+
+## 2. Carpeta sin ignorar (Archivos ya rastreados en Git)
+
+* **¿Qué pasó?**
+
+
+Se subió una carpeta (`datos_prueba`) al repositorio remoto porque se ejecutó `git add .` y `git commit` antes de incluirla en el archivo `.gitignore`. Si un archivo o carpeta ya fue rastreado por Git, añadirlo después a `.gitignore` no lo elimina del control de versiones.
+
+
+* **¿Cómo se resolvió?**
+
+
+Se removió la carpeta del índice de rastreo de Git sin borrarla del disco local ejecutando `git rm -r --cached datos_prueba`. Luego se hizo commit y push de esa eliminación, y finalmente se agregó la regla `datos_prueba/` al `.gitignore` para prevenir futuras subidas.
+
+
+
+---
+
+## 3. Ramas master / main (Divergencia en el nombre de la rama principal)
+
+* **¿Qué pasó?**
+
+
+El entorno local creó la rama principal por defecto con el nombre `master` (por configuración local), mientras que el repositorio en GitHub se inicializó con el estándar actual `main`. Al empujar los cambios con `git push -u origin master`, se crearon dos ramas principales paralelas en el remoto en lugar de sincronizarse en una sola.
+
+
+* **¿Cómo se resolvió?**
+
+
+Se renombró la rama local a `main` con `git branch -m master main` y se subió con `git push -u origin main`. Posteriormente, se eliminó la rama `master` remota con `git push origin --delete master` y se ajustó la configuración global de Git para que los próximos proyectos inicien directamente en `main`.
+
+

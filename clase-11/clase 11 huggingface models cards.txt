@@ -1,0 +1,34 @@
+https://huggingface.co/ericc12
+
+1. *Subida y token:*
+Los subí directo desde la web arrastrando los archivos, así que no usé token. Igual, si usás un token, tenés que darle permiso para escribir/subir y guardarlo en un lugar seguro de tu compu (nunca escribirlo en el código ni subirlo a GitHub), porque si alguien lo ve puede usar tu cuenta y tocarte o borrar cosas.
+
+
+2. *Etiquetas de la Model card:*
+Arriba de cada repo aparecen etiquetas como la tarea (regresión o clasificación), la librería y el idioma o licencia. Salen de la cabecera que está arriba de todo en el README.md.
+
+
+3. *Archivo del modelo, para usar y para reproducir:*
+En cada carpeta el modelo entrenado es el archivo principal donde quedó guardado lo que aprendió (como model.joblib en el de sklearn y los archivos equivalentes en los otros). Para *usarlo* alcanza con el modelo y los archivos necesarios para probarlo/correrlo; para correrlo se necesita el código de entrenamiento, los datos y los requisitos para volver a entrenarlo desde cero.
+
+
+4. *config.json en PyTorch (02) y Transformers (04):*
+No guardan exactamente lo mismo: en el de Transformers guarda la configuración típica de ese tipo de modelo (cómo está armado y qué etiquetas maneja), mientras que en el de PyTorch guarda la info de configuración propia de ese modelo.
+
+
+5. *Por qué PyTorch necesita modelo.py y Keras no:*
+Porque en el de PyTorch la forma en que se arma el modelo va escrita en modelo.py y sin eso no sabe cómo levantarlo; en cambio en Keras el archivo del modelo ya trae todo armado adentro y no necesita un script extra como ese.
+
+
+6. *Usarlo con InferenceClient:*
+Depende del modelo y de cómo esté armado: el de texto de Transformers es el que más se acerca a ese estilo de uso, pero si el modelo no está soportado para inferencia directa ahí o no tiene lo que pide esa herramienta, no va a andar igual.
+
+
+8. *Qué necesita un compañero para usar tu modelo de PyTorch:*
+Además de bajar los archivos del repo, tiene que tener en su código cómo cargar/armar el modelo de PyTorch y pasarle los datos en el mismo formato que espera.
+
+
+9. *Otros lugares para compartir y qué les falta:*
+se puede comaprtir por GitHub, Google Drive o pasárselo directo a alguien. Lo que le falta frente a Hugging Face es tener todo centralizado para modelos: ver Model card, las etiquetas, probarlo ahí mismo y que sea fácil de encontrar y bajar.
+
+
